@@ -2,9 +2,10 @@
 This is the code for assignment 1
 """
 # importing argparse and pandas library
+from pathlib import Path
 import argparse
 import pandas as pd
-from pathlib import Path
+
 
 # Passing the TSV file to
 # read_csv() function
