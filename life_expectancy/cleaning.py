@@ -17,10 +17,6 @@ def load_data():
     df = pd.read_csv(filepath, sep="\t")
     return df
 
-PARSER = argparse.ArgumentParser()
-PARSER.add_argument("region", help="Choose the region you want to filter in ISO format",type=str)
-REGION = PARSER.parse_args()
-
 
 def clean_data(data, region = "PT"):
     """
@@ -52,6 +48,9 @@ def save_data(data, region="PT"):
 
 
 if __name__ == "__main__": # pragma: no cover
+    PARSER = argparse.ArgumentParser()
+    PARSER.add_argument("region", help="Choose the region you want to filter in ISO format",type=str)
+    REGION = PARSER.parse_args()
     DATA = load_data()
     CLEAN_DATA = clean_data(DATA, REGION.region)
     save_data(CLEAN_DATA, REGION.region)
