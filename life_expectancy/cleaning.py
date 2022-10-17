@@ -14,8 +14,8 @@ import pandas as pd
 def load_data():
     """Reads the data and returns it as a pandas DataFrame"""
     filepath = Path.cwd()/"life_expectancy/data/eu_life_expectancy_raw.tsv"
-    df = pd.read_csv(filepath, sep="\t")
-    return df
+    original_df = pd.read_csv(filepath, sep="\t")
+    return original_df
 
 
 def clean_data(data, region = "PT"):
@@ -24,21 +24,25 @@ def clean_data(data, region = "PT"):
     Unpivots/melts the years into a new column.
     Converts the years into int and the values into float, while eliminating the NaN's.
     """
-    df = data.copy()
-    first_column = df.columns[0]
+    original_df = data.copy()
+    first_column = original_df.columns[0]
     column_splits = ["unit", "sex", "age", "region"]
-    df[column_splits] = df[first_column].str.split(",", expand=True)
-    df = df.drop(first_column, axis=1)
-    column_names = column_splits + list(df.columns[:-4])
-    df = df.reindex(columns=column_names)
-    year_values = list(filter(lambda x: x not in column_splits, df.columns.tolist()))
-    df = df.melt(id_vars=column_splits, value_vars=year_values, var_name='year', value_name='value')
-    df["year"] = df["year"].astype(int)
-    df = df[df.value.str.strip() != ':']
-    df["value"] = df["value"].str.replace(r'[a-zA-z]', '').astype(float) #This cleans a few values that contain some letters
-    df = df[df["region"]==region]
+    original_df[column_splits] = original_df[first_column].str.split(",", expand=True)
+    split_df = original_df.drop(first_column, axis=1)
+    column_names = column_splits + list(split_df.columns[:-4])
+    shuffled_df = split_df.reindex(columns=column_names)
+    year_values = list(filter(lambda x: x not in column_splits, shuffled_df.columns.tolist()))
+    melted_df = shuffled_df.melt(id_vars=column_splits,
+                                value_vars=year_values,
+                                var_name='year',
+                                value_name='value')
+    melted_df["year"] = melted_df["year"].astype(int)
+    clean_df = melted_df[melted_df.value.str.strip() != ':']
+    #The following cleans a few values that contain some letters
+    clean_df["value"] = clean_df["value"].str.replace(r'[a-zA-z]','').astype(float)
+    filtered_df = clean_df[clean_df["region"]==region]
 
-    return df
+    return filtered_df
 
 
 
@@ -49,7 +53,9 @@ def save_data(data, region="PT"):
 
 if __name__ == "__main__": # pragma: no cover
     PARSER = argparse.ArgumentParser()
-    PARSER.add_argument("region", help="Choose the region you want to filter in ISO format",type=str)
+    PARSER.add_argument("region",
+                        help="Choose the region you want to filter in ISO format",
+                        type=str)
     REGION = PARSER.parse_args()
     DATA = load_data()
     CLEAN_DATA = clean_data(DATA, REGION.region)
