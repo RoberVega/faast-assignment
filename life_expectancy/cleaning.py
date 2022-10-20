@@ -10,7 +10,7 @@ import pandas as pd
 # Passing the TSV file to
 # read_csv() function
 # with tab separator
-
+# added this comment to solicitate a pull request
 def load_data():
     """Reads the data and returns it as a pandas DataFrame"""
     filepath = Path.cwd()/"life_expectancy/data/eu_life_expectancy_raw.tsv"
