@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "life_expectancy"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
