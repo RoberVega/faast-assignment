@@ -7,12 +7,16 @@ on:
       - main
 
 
+
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
+    - name: ssh deploy
+      uses: easingthemes/ssh-deploy@v3.0.1
     - uses: actions/checkout@v1
     - name: Install Node.js
       uses: actions/setup-node@v1
